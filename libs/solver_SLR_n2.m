@@ -1,0 +1,31 @@
+function sols = solver_SLR_n2(data)
+C = setup_elimination_template(data);
+C0 = C(:,1:4);
+C1 = C(:,5:end);
+C1 = C0 \ C1;
+RR = [-C1(end-1:end,:);eye(2)];
+AM_ind = [4,1];
+AM = RR(AM_ind,:);
+[V,D] = eig(full(AM));
+V = V ./ (ones(size(V,1),1)*V(1,:));
+sols(1,:) = RR(2,:)*V;
+sols(2,:) = diag(D).';
+
+% Action =  y
+% Quotient ring basis (V) = 1,y,
+% Available monomials (RR*V) = y^2,x,1,y,
+function [coeffs,coeffs_ind] = compute_coeffs(data)
+coeffs(1) = data(3);
+coeffs(2) = data(4);
+coeffs(3) = -data(1);
+coeffs(4) = data(5);
+coeffs(5) = data(6);
+coeffs(6) = data(7);
+coeffs(7) = -data(2);
+coeffs_ind = [1,4,1,2,5,2,6,1,3,3,7,2,3];
+function C = setup_elimination_template(data)
+[coeffs,coeffs_ind] = compute_coeffs(data);
+ii = [3,4,2,3,4,2,4,1,3,1,4,1,2];
+jj = [1,1,2,2,2,3,3,4,4,5,5,6,6];
+C = sparse(ii,jj,coeffs(coeffs_ind),4,6);
+
