@@ -3,11 +3,30 @@
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" });
 </script>
-# Homework: Linear Regression without Correspondences
-Wu Fan(2019233180)
+# Project: Linear Regression without Correspondences
+Wu Fan
+# This Project invites students to implement several algorithms, including
+- Brute force,
+- RANSAC,
+- Alternating Minimization,
+- Robust Regression,
+- The algebraic method,  
+and explore their limitations in solving the problem of Linear Regression without Correspondences. We provide MATLAB starting code for this homework.
 
-## 1 Appetizer
-
+# 1 Appetizer
+## We assume the following model:
+$$
+y=\Pi A x+\epsilon, y \in \mathbb{R}^{m}, x \in \mathbb{R}^{n},
+$$
+where $\Pi$ belongs to the set $\mathcal{P}$ of $m \times m$ permutation matrices and $\epsilon$ is noise. The evaluation metric for performance of algorithms is the relative estimation error
+$$
+100 \% \times \frac{\|x-\hat{x}\|_{2}}{\|x\|_{2}}
+$$
+where $x$ is the groundtruth and $\hat{x}$ the estimate given by some algorithm.
+Exercise 1.1 (Synthetic Data Generation, 5 points). Without data, we can not play. Synthetic data are generated in the following way. The $m \times n$ matrix $A$ and the parameter $x \in \mathbb{R}^{n}$ are randomly sampled from the standard normal distribution. The vector $y$ is then obtained by 1 ) shuffling the entries of $A x$ via an arbitrary permutation $\Pi \in \mathcal{P}$ and 2) contaminating the shuffled entries by additive noise sampled from the normal distribution $\mathcal{N}\left(0, \sigma^{2} I_{m}\right)$. you are required to implement the function SLR_1_gen_data. This function takes four parameters as inputs:
+- $m, n:$ the dimensions of the data.
+- sigma: the standard deviation of noise.
+- shuffled_ratio: how many percentages of the rows of $A$, or equivalently the entries of $y$, should be shuffled.
 * Exercise 1.1 implement the function SLR 1 gen data
 
 
@@ -121,17 +140,31 @@ Pi_idx,error=SLR_1_Pi_given_x(A, y, x)
 
 
 
-## 2 Brute Force
-
+# 2 Brute Force
+## 2 Brute Force (5 points)
+Exercise $2.1$ (least-squares, 2 points). generate data $A, y$ without shuffling, i.e., $\Pi$ is the identity matrix. Solve the problem (code it in SLR_2_brute_force_run.m)
+$$
+\min _{x \in \mathbb{R}^{n}}\|y-A x\|_{2}
+$$
+by least-squares. Now the question:
+- How large sigma can be for least-squares to have small errors $(\leq 1 \%)$ ?
+Exercise $2.2$ (brute force, 3 points). Put your implementation in SLR_2_brute_force.m and experiments in SLR_2_brute_force_run.m:
+- Implement the brute force algorithm as described in the slide.
+- How large $m, n$ can go for this algorithm to be efficient (terminates in less than half an hour)?
+- How large sigma can be for this algorithm to have small errors $(\leq 1 \%)$ ?
+- How many percentages of shuffled data can the algorithm tolerate?
+You are suggested to answer those questions also for the following algorithms.
 *   Exercise 2.1  least-square solver  
 generate data A, y without shuffling,
 How large sigma can be for least-squares to have small errors (≤ 1%)  
-\begin{gather}
+
+$$
 errors=100\%*\frac{||x-\hat{x}||_2}{||x||_2}\\\\
      y=Ax+\epsilon \\\\
      \hat{x}=(A^TA)^{-1}A^Ty \\\\
      error=\frac{||x-(A^TA)^{-1} A^T(Ax+\epsilon)||_2}{||x||_2}=\frac{\sigma||\xi||_2}{||x||_2}
-\end{gather}
+$$
+
      To have small errors $(\leqslant1\%)$, $\xi$, x is both produced by norm distribution 
 , we should set the magnitude of sigma equals 0.01. the code following can also show this.
 
